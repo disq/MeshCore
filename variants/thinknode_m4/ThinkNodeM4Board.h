@@ -14,6 +14,12 @@ protected:
 #endif
   uint8_t btn_prev_state;
 
+#ifdef HAS_SERIAL_BATTERY_LEVEL
+  uint16_t _serial_batt_mv;
+  bool _serial_batt_valid;
+  void pollSerialBattery();
+#endif
+
 public:
   ThinkNodeM4Board() : NRF52Board("THINKNODE_M4_OTA") {}
   void begin();

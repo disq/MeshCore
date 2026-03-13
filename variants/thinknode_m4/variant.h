@@ -39,10 +39,13 @@ static const uint8_t A0 = PIN_A0;
 
 #define PIN_POWER_EN            (11)            // P0.11 - LoRa radio power
 
-// Serial battery interface (not yet supported in MeshCore)
-// #define HAS_SERIAL_BATTERY_LEVEL 1
-// #define SERIAL_BATTERY_RX    (30)
-// #define SERIAL_BATTERY_TX    (5)
+// Serial battery interface (secondary MCU in dock, 4800 baud)
+#define HAS_SERIAL_BATTERY_LEVEL 1
+#define SERIAL_BATTERY_RX       (30)            // P0.30
+#define SERIAL_BATTERY_TX       (5)             // P0.05
+#define PIN_SERIAL2_RX          SERIAL_BATTERY_RX
+#define PIN_SERIAL2_TX          SERIAL_BATTERY_TX
+#define SERIAL_BATTERY_BAUD     4800
 
 ////////////////////////////////////////////////////////////////////////////////
 // UART pin definition
