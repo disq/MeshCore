@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-#include "GAT562MeshTrackerProBoard.h"
+#include "GAT56230SMeshKitBoard.h"
 
 
 #ifdef NRF52_POWER_MANAGEMENT
@@ -10,13 +10,11 @@
 const PowerMgtConfig power_config = {
   .lpcomp_ain_channel = PWRMGT_LPCOMP_AIN,
   .lpcomp_refsel = PWRMGT_LPCOMP_REFSEL,
-  .voltage_bootlock = PWRMGT_VOLTAGE_BOOTLOCK,
-  .voltage_runtime = PWRMGT_VOLTAGE_BOOTLOCK - 200,
-  .wdt_timeout_ms = 60000
+  .voltage_bootlock = PWRMGT_VOLTAGE_BOOTLOCK
 };
 
 
-void GAT562MeshTrackerProBoard::initiateShutdown(uint8_t reason) {
+void GAT56230SMeshKitBoard::initiateShutdown(uint8_t reason) {
   // Disable LoRa module power before shutdown
   digitalWrite(SX126X_POWER_EN, LOW);
 
@@ -30,7 +28,7 @@ void GAT562MeshTrackerProBoard::initiateShutdown(uint8_t reason) {
 #endif // NRF52_POWER_MANAGEMENT
 
 
-void GAT562MeshTrackerProBoard::begin() {
+void GAT56230SMeshKitBoard::begin() {
   NRF52BoardDCDC::begin();
   pinMode(PIN_VBAT_READ, INPUT);
 
