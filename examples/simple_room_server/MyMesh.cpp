@@ -730,6 +730,7 @@ void MyMesh::begin(FILESYSTEM *fs) {
   acl.finalizeNonceLoad(dirty_reset);
   if (dirty_reset) acl.saveNonces();  // persist bumped nonces immediately
   next_nonce_persist = futureMillis(60000);
+
   region_map.load(_fs);
 
   // establish default-scope
