@@ -1,7 +1,7 @@
-#include "target.h"
 #include <Arduino.h>
+#include "target.h"
 
-HeltecWirelessPaperBoard board;
+XiaoS3Board board;
 
 #if defined(P_LORA_SCLK)
   static SPIClass spi;
@@ -14,18 +14,21 @@ WRAPPER_CLASS radio_driver(radio, board);
 
 ESP32RTCClock fallback_clock;
 AutoDiscoverRTCClock rtc_clock(fallback_clock);
-
-SensorManager sensors;
+EnvironmentSensorManager sensors;
 
 #ifdef DISPLAY_CLASS
-DISPLAY_CLASS display;
-MomentaryButton user_btn(PIN_USER_BTN, 1000, true);
+  DISPLAY_CLASS display;
+  MomentaryButton user_btn(PIN_USER_BTN, 1000, true);
 #endif
 
 bool radio_init() {
   fallback_clock.begin();
   rtc_clock.begin(Wire);
-#if defined(P_LORA_SCLK)
+  pinMode(21, INPUT);
+  pinMode(48, OUTPUT);
+
+  #if defined(P_LORA_SCLK)
+  spi.begin(P_LORA_SCLK, P_LORA_MISO, P_LORA_MOSI);
   return radio.std_init(&spi);
 #else
   return radio.std_init();
@@ -49,6 +52,5 @@ void radio_set_tx_power(int8_t dbm) {
 
 mesh::LocalIdentity radio_new_identity() {
   RadioNoiseListener rng(radio);
-  return mesh::LocalIdentity(&rng); // create new random identity
+  return mesh::LocalIdentity(&rng);  // create new random identity
 }
-
