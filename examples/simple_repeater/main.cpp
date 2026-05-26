@@ -29,9 +29,6 @@ static unsigned long userBtnDownAt = 0;
 #endif
 
 void setup() {
-#if defined(USE_SERIAL1_CONSOLE) && defined(NRF52_PLATFORM)
-  ((Uart *)&MESH_CONSOLE_SERIAL)->setPins(PIN_SERIAL1_RX, PIN_SERIAL1_TX);
-#endif
   MESH_CONSOLE_SERIAL.begin(115200);
   delay(1000);
 
