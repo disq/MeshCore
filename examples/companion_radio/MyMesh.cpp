@@ -2293,7 +2293,7 @@ bool MyMesh::advert() {
   }
 }
 
-// Check if there is pending work (packets to send)
+// Check if there is pending work (packets to send or pending contacts write)
 bool MyMesh::hasPendingWork() const {
-  return _mgr->getOutboundCount(0xFFFFFFFF) > 0;
+  return _mgr->getOutboundTotal() > 0 || dirty_contacts_expiry != 0;
 }
