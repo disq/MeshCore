@@ -991,7 +991,8 @@ MyMesh::MyMesh(mesh::MainBoard &board, mesh::Radio &radio, mesh::MillisecondCloc
   _prefs.flood_max = 64;
   _prefs.flood_max_unscoped = 64;
   _prefs.flood_max_advert = 8;
-  _prefs.interference_threshold = 1; // non-zero enables hardware CAD before TX
+  _prefs.interference_threshold = 0; // disabled
+  _prefs.cad_enabled = 1;            // hardware CAD before TX (on by default; 'set cad off' to disable)
 
   // bridge defaults
   _prefs.bridge_enabled = 1;    // enabled
