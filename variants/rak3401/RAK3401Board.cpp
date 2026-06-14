@@ -11,7 +11,7 @@
   #define PWRMGT_BTN_LPCOMP_AIN 7
 #endif
 #ifndef PWRMGT_BTN_LPCOMP_REFSEL
-  #define PWRMGT_BTN_LPCOMP_REFSEL 3   // 4/8 VDD (~1.5V) threshold
+  #define PWRMGT_BTN_LPCOMP_REFSEL 3   // 4/8 VDD (~1.65V at 3.3V) threshold
 #endif
 #endif
 
@@ -40,10 +40,11 @@ void RAK3401Board::initiateShutdown(uint8_t reason) {
   //
   // This pin is wired as an *analog* button (see MomentaryButton in target.cpp:
   // pressed == analogRead() < threshold). GPIO SENSE can't be used as the wake
-  // source: the digital input buffer reads this line as LOW even at the released
-  // idle level (verified on hardware — analogRead reports ~VDD while NRF_GPIO->IN
-  // reads 0 and SENSE_Low latches immediately), so a GPIO SENSE arm wakes the
-  // chip the instant we enter SYSTEMOFF and it can never stay off.
+  // source: using the pin as an analog/SAADC input leaves its digital input
+  // buffer disconnected, so NRF_GPIO->IN reads 0 regardless of the real ~VDD
+  // level and SENSE_Low latches immediately (verified on hardware — analogRead
+  // reports ~VDD while IN=0). A GPIO SENSE arm therefore wakes the chip the
+  // instant we enter SYSTEMOFF and it can never stay off.
   //
   // LPCOMP works in the analog domain, so it sees the idle level correctly. Arm
   // it for a DOWN crossing at ~1/2 VDD: released idles near VDD (above), a press
@@ -54,7 +55,8 @@ void RAK3401Board::initiateShutdown(uint8_t reason) {
   // Wait for release first so LPCOMP is armed while the level is above the
   // threshold — otherwise the initial press generates no new downward crossing.
   // Bounded by a timeout so a stuck/low reading can never wedge shutdown.
-  const int BTN_RELEASED_ADC = 1024;  // well above the press threshold
+  analogReadResolution(12);  // as getBattMilliVolts() does; makes the threshold below unambiguous
+  const int BTN_RELEASED_ADC = 2048;  // mid-scale at 12-bit: above the ~1/2 VDD LPCOMP threshold
   uint32_t t0 = millis();
   int released_streak = 0;
   while (released_streak < 5 && (millis() - t0) < 5000) {
